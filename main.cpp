@@ -290,6 +290,19 @@ void myKeyboard(unsigned char theKey, int x, int y)
 					break;
 				case '6':
 					break;
+				case 'a':
+					if (pieces[0].isMoving)
+					{
+						pieces[0].isMoving = false;
+						pieces[0].i = 0;
+						pieces[0].pitch=0;
+						pieces[0].yaw=0;
+						pieces[0].roll=0;
+
+
+					}
+					else
+						pieces[0].isMoving = true;
                 default:
                         if (theKey == 27)   // ASCII for escape character
                                 exit(0);
