@@ -37,6 +37,65 @@ struct chessPiece
 int count;
 chessPiece pieces[32];
 
+void DrawBishop() {
+	GLUquadric *solid;
+	solid = gluNewQuadric();
+	gluQuadricDrawStyle(solid, GLU_FILL);
+	glPushMatrix();
+	glRotated(-90, 1, 0, 0);
+	gluDisk(solid, 0, 1, 20, 1);
+    gluCylinder(solid, 1, .75, .4, 20, 1);
+	glTranslatef(0, 0, .4);
+	gluDisk(solid, 0, 1, 20, 1);
+	gluCylinder(solid, 1, .75, .6, 20, 1);
+	glTranslatef(0,0,.6);
+	gluCylinder(solid, .6, .4, 3, 20, 1);
+	glTranslatef(0,0,3);
+	glutSolidTorus(.3, .4, 7, 20);
+	gluCylinder(solid, .4, .2, 1.5, 20, 1);
+	glTranslatef(0,0,1.6);
+	glutSolidSphere(.4, 10, 20);
+	//glRotatef(-90, 0, 0, 1);
+	//glRotated(90, 1, 0, 0);
+	//glTranslatef(0, 0, 1.5);
+	//glRotatef(80, 1, 0, 0);
+	//gluPartialDisk(solid, .3, 1.2, 3, 50, PI / 4, 2 * PI);
+	glTranslatef(0,0,.5);
+	glutSolidSphere(.1, 10, 15);
+	glPopMatrix();
+}
+
+void DrawKing() {
+	 GLUquadric *solid = gluNewQuadric();
+        glPushMatrix();
+                glRotated(-90.0f, 1, 0, 0);
+                gluDisk(solid, 0, 1, 20, 1);
+                gluCylinder(solid, 1, .75, 1, 20, 1);
+                glTranslated(0, 0, 1);
+                gluDisk(solid, 0, .75, 20, 1);
+                gluCylinder(solid, .6, .4, 4, 20, 1);
+                glTranslated(0, 0, 4);
+                glutSolidTorus(.33, .42, 7, 20);
+                glTranslated(0, 0, .02);
+                gluCylinder(solid, .4, .6, 1.5, 20, 1);
+                glTranslated(0, 0, 1.5);
+                glutSolidTorus(.4, .2, 7, 20);
+                glTranslated(0, 0, .6);
+                glutSolidCube(.4);
+				glTranslatef(0,0,.3);
+				glutSolidCube(.4);
+				glTranslatef(0,0,.3);
+				glutSolidCube(.4);
+				glTranslatef(.3, 0, -.3);
+				glutSolidCube(.4);
+				glTranslatef(-.6, 0, 0);
+				glutSolidCube(.4);
+        glPopMatrix();
+}
+
+void DrawKnight() {
+
+}
 
 
 
@@ -177,6 +236,8 @@ void DisplaySolid()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 	
 	glPushMatrix();
+		glTranslatef(-.75, .75, 0);
+		glRotatef(-90, 1, 0, 0);
 		glScaled(.1, .1, .1);
 		DrawBoard();
 	glPopMatrix();
@@ -202,6 +263,8 @@ void myKeyboard(unsigned char theKey, int x, int y)
         {
                 case 'q':   // end display
                         exit (0);
+				case 'a':
+					break;
                 default:
                         if (theKey == 27)   // ASCII for escape character
                                 exit(0);
