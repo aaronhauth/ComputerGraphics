@@ -17,6 +17,7 @@
 #include <GLUT/glut.h>      
 #endif
 
+#include <cmath>
 #include <stdlib.h>
 using namespace std;
 
@@ -24,18 +25,20 @@ using namespace std;
 struct chessPiece
 {
 	bool isMoving;
-	int x, y, z;
+	int x, y, z, i;
 	int roll, yaw, pitch;
 	void (*model)();
 
 	chessPiece()
 	{x=0;y=0;z=0;roll=0;yaw=0; pitch=0; isMoving=false; model=NULL;}
 	chessPiece(int newx, int newy, int newz, void(*drawFunc)(void))
-	{x=newx; y=newy; z=newz; roll=0; yaw=0; pitch=0; isMoving=false; model = drawFunc;}
+	{x=newx; y=newy; z=newz; i=0; roll=0; yaw=0; pitch=0; isMoving=false; model = drawFunc;}
 };
 
 int count;
 chessPiece pieces[32];
+
+
 
 void DrawBishop() {
 	GLUquadric *solid;
@@ -229,32 +232,39 @@ void DisplaySolid()
 	glOrtho(-1, 1, -1, 1, -.1, 100.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(20, 20, 20, 0, 1, 0, 0.0, 1.0, 0.0);
+	gluLookAt(5, 5, 5, 0, 1, 0, 0.0, 1.0, 0.0);
 //	gluLookAt(.5, 0.7, 0.6, 0, 0, 0, 0.0, 1.0, 0.0);
 
 	// start drawing
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
-	
-	glPushMatrix();
-		glTranslatef(-.75, .75, 0);
-		glRotatef(-90, 1, 0, 0);
-		glScaled(.1, .1, .1);
-		DrawBoard();
-	glPopMatrix();
-
+	for (int i = 0; i < 1; i++)
+	{
+		glPushMatrix();
+			glTranslatef(pieces[i].x, pieces[i].y, pieces[i].z);
+			glRotatef(pieces[i].roll, 0, 1, 0);
+			glRotatef(pieces[i].yaw, 1, 0, 0);
+			glRotatef(pieces[i].pitch, 1, 0, 0);
+			glScaled(.1, .1, .1);
+			pieces[i].model();
+		glPopMatrix();
+	}
 
 	glutSwapBuffers();
 }
 
-void animateFunc()
+void animateFunc(int value)
 {
 	for(int i = 0; i < 32; i++)
 	{
 		if (pieces[i].isMoving)
 		{
-
+			pieces[i].yaw = 35*sin(((pieces[i].i++)*3.14)/180);
+			if (pieces[0].i == 180)
+				pieces[0].isMoving = false;
 		}
 	}
+	glutPostRedisplay();
+	glutTimerFunc(30, animateFunc, value);
 }
 
 void myKeyboard(unsigned char theKey, int x, int y)
@@ -263,7 +273,22 @@ void myKeyboard(unsigned char theKey, int x, int y)
         {
                 case 'q':   // end display
                         exit (0);
-				case 'a':
+				case '1':
+					pieces[0].model = &DrawQueen;
+					break;
+				case '2':
+					pieces[0].model = &DrawKing;
+					break;
+				case '3':
+					pieces[0].model = &DrawRook;
+					break;
+				case '4':
+					pieces[0].model = &DrawBishop;
+					break;
+				case '5':
+					pieces[0].model = &DrawPawn;
+					break;
+				case '6':
 					break;
                 default:
                         if (theKey == 27)   // ASCII for escape character
@@ -273,6 +298,14 @@ void myKeyboard(unsigned char theKey, int x, int y)
         glutPostRedisplay();     // invoke the "Draw" function to actually display the new image
 }
 
+
+void MyInit()
+{
+	pieces[0].model = &DrawBishop;
+	pieces[0].isMoving = true;
+}
+
+
 int main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
@@ -281,7 +314,8 @@ int main(int argc, char **argv)
 	glutInitWindowPosition(100, 100);
 	glutCreateWindow("Shaded example - 3D scene");
 	glutDisplayFunc(DisplaySolid);
-        glutKeyboardFunc(myKeyboard);
+    glutKeyboardFunc(myKeyboard);
+	glutTimerFunc(30, animateFunc, 100);
 	
 	glEnable(GL_LIGHTING);  //	enable the light source
 	glEnable(GL_LIGHT0);
@@ -291,6 +325,6 @@ int main(int argc, char **argv)
 	glEnable(GL_NORMALIZE);  // normalize vectors for proper shading
 	glClearColor(0.1f, 0.1f, 0.1f, 0.0f); //background is light gray
 	glViewport(0, 0, 640, 480);
-	
+	MyInit();
 	glutMainLoop();
 }
