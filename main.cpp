@@ -1,3 +1,11 @@
+//Authors: Chris Johnson & Aaron Hauth
+//Due date: 11/15/13
+//Limitations: Doesn't draw the pieces on the board or the knight //yet
+//Description: Draws chess pieces and rotates them
+
+
+
+
 #define WINDOWS
 
 #ifdef WINDOWS
@@ -39,7 +47,7 @@ int count;
 chessPiece pieces[32];
 
 
-
+//function that draws bishop
 void DrawBishop() {
 	GLUquadric *solid;
 	solid = gluNewQuadric();
@@ -68,6 +76,7 @@ void DrawBishop() {
 	glPopMatrix();
 }
 
+//function that draws king
 void DrawKing() {
 	 GLUquadric *solid = gluNewQuadric();
         glPushMatrix();
@@ -95,7 +104,6 @@ void DrawKing() {
 				glutSolidCube(.4);
         glPopMatrix();
 }
-
 void DrawKnight() 
 {
 	GLUquadric *solid;
@@ -133,7 +141,7 @@ void DrawKnight()
 }
 
 
-
+//draws the rook
 void DrawRook()
 {
 	GLUquadric *solid;
@@ -168,7 +176,7 @@ void DrawRook()
 
 
 
-
+//draws the pawn
 void DrawPawn()
 {
 	GLUquadric *solid = gluNewQuadric();
@@ -182,6 +190,7 @@ void DrawPawn()
 
 }
 
+//draws the queen
 void DrawQueen()
 {
 	GLUquadric *solid = gluNewQuadric();
@@ -204,6 +213,7 @@ void DrawQueen()
 	glPopMatrix();
 }
 
+//draws the board
 void DrawBoard()
 {
 	glPushMatrix();
@@ -236,7 +246,149 @@ void DrawBoard()
 	}
 	glPopMatrix();
 }
+void DrawPiecesOnBoard() {
+			glPushMatrix();
+			glTranslatef(-.69, .4, -.185);
+			glRotatef(pieces[0].roll, 0, 1, 0);
+			glRotatef(pieces[0].yaw, 1, 0, 0);
+			glRotatef(pieces[0].pitch, 1, 0, 0);
+			glScaled(.05, .05, .05);
+			pieces[0].model();
+			glPopMatrix();
+			glPushMatrix();
+			glTranslatef(-.68, .4, -.469);
+			glRotatef(pieces[0].roll, 0, 1, 0);
+			glRotatef(pieces[0].yaw, 1, 0, 0);
+			glRotatef(pieces[0].pitch, 1, 0, 0);
+			glScaled(.05, .05, .05);
+			pieces[0].model();
+			glPopMatrix();
 
+			glPushMatrix();
+			glTranslatef(-.68, .4, -.37);
+			glRotatef(pieces[1].roll, 0, 1, 0);
+			glRotatef(pieces[1].yaw, 1, 0, 0);
+			glRotatef(pieces[1].pitch, 1, 0, 0);
+			glScaled(.05, .05, .05);
+			pieces[1].model();
+			glPopMatrix();
+			
+			glPushMatrix();
+			glTranslatef(-.68, .4, .02);
+			glRotatef(pieces[2].roll, 0, 1, 0);
+			glRotatef(pieces[2].yaw, 1, 0, 0);
+			glRotatef(pieces[2].pitch, 1, 0, 0);
+			glScaled(.05, .05, .05);
+			pieces[2].model();
+			glPopMatrix();
+			glPushMatrix();
+			glTranslatef(-.669, .4, -.665);
+			glRotatef(pieces[2].roll, 0, 1, 0);
+			glRotatef(pieces[2].yaw, 1, 0, 0);
+			glRotatef(pieces[2].pitch, 1, 0, 0);
+			glScaled(.05, .05, .05);
+			pieces[2].model();
+			glPopMatrix();
+
+			glPushMatrix();
+			glTranslatef(-.68, .4, -.283 );
+			glRotatef(pieces[3].roll, 0, 1, 0);
+			glRotatef(pieces[3].yaw, 1, 0, 0);
+			glRotatef(pieces[3].pitch, 1, 0, 0);
+			glScaled(.05, .05, .05);
+			pieces[3].model();
+			glPopMatrix();
+
+			glPushMatrix();
+			glTranslatef(-.567, .4, .035);
+			glRotatef(pieces[4].roll, 0, 1, 0);
+			glRotatef(pieces[4].yaw, 1, 0, 0);
+			glRotatef(pieces[4].pitch, 1, 0, 0);
+			glScaled(.07, .07, .07);
+			pieces[4].model();
+			glPopMatrix();
+			glPushMatrix();
+			glTranslatef(-.567, .4, -.075);
+			glRotatef(pieces[4].roll, 0, 1, 0);
+			glRotatef(pieces[4].yaw, 1, 0, 0);
+			glRotatef(pieces[4].pitch, 1, 0, 0);
+			glScaled(.07, .07, .07);
+			pieces[4].model();
+			glPopMatrix();
+			glPushMatrix();
+			glTranslatef(-.567, .4, -.172);
+			glRotatef(pieces[4].roll, 0, 1, 0);
+			glRotatef(pieces[4].yaw, 1, 0, 0);
+			glRotatef(pieces[4].pitch, 1, 0, 0);
+			glScaled(.07, .07, .07);
+			pieces[4].model();
+			glPopMatrix();
+			glPushMatrix();
+			glTranslatef(-.567, .4, -.275);
+			glRotatef(pieces[4].roll, 0, 1, 0);
+			glRotatef(pieces[4].yaw, 1, 0, 0);
+			glRotatef(pieces[4].pitch, 1, 0, 0);
+			glScaled(.07, .07, .07);
+			pieces[4].model();
+			glPopMatrix();
+			glPushMatrix();
+			glTranslatef(-.567, .4, -.377);
+			glRotatef(pieces[4].roll, 0, 1, 0);
+			glRotatef(pieces[4].yaw, 1, 0, 0);
+			glRotatef(pieces[4].pitch, 1, 0, 0);
+			glScaled(.07, .07, .07);
+			pieces[4].model();
+			glPopMatrix();
+			glPushMatrix();
+			glTranslatef(-.567, .4, -.476);
+			glRotatef(pieces[4].roll, 0, 1, 0);
+			glRotatef(pieces[4].yaw, 1, 0, 0);
+			glRotatef(pieces[4].pitch, 1, 0, 0);
+			glScaled(.07, .07, .07);
+			pieces[4].model();
+			glPopMatrix();
+			glPushMatrix();
+			glTranslatef(-.567, .4, -.570);
+			glRotatef(pieces[4].roll, 0, 1, 0);
+			glRotatef(pieces[4].yaw, 1, 0, 0);
+			glRotatef(pieces[4].pitch, 1, 0, 0);
+			glScaled(.07, .07, .07);
+			pieces[4].model();
+			glPopMatrix();
+			glPushMatrix();
+			glTranslatef(-.567, .4, -.670);
+			glRotatef(pieces[4].roll, 0, 1, 0);
+			glRotatef(pieces[4].yaw, 1, 0, 0);
+			glRotatef(pieces[4].pitch, 1, 0, 0);
+			glScaled(.07, .07, .07);
+			pieces[4].model();
+			glPopMatrix();
+
+			glPushMatrix();
+			glTranslatef(-.68, .4, -.1);
+			glRotatef(180, 0, 1, 0);
+			glRotatef(pieces[5].roll, 0, 1, 0);
+			glRotatef(pieces[5].yaw, 1, 0, 0);
+			glRotatef(pieces[5].pitch, 1, 0, 0);
+			glScaled(.06, .06, .06);
+			pieces[5].model();
+			glPopMatrix();
+			glPushMatrix();
+			glTranslatef(-.68, .4, -.555);
+			glRotatef(180, 0, 1, 0);
+			glRotatef(pieces[5].roll, 0, 1, 0);
+			glRotatef(pieces[5].yaw, 1, 0, 0);
+			glRotatef(pieces[5].pitch, 1, 0, 0);
+			glScaled(.06, .06, .06);
+			pieces[5].model();
+			glPopMatrix();
+			
+
+	
+}
+
+
+//the draw function+
 void DisplaySolid()
 {
 	// set properties of the surface material
@@ -264,26 +416,27 @@ void DisplaySolid()
 	glOrtho(-1, 1, -1, 1, -.1, 100.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(5, 5, 5, 0, 1, 0, 0.0, 1.0, 0.0);
+	gluLookAt(5, 10, 5, 0, 1, 0, 0.0, 1.0, 0.0);
 //	gluLookAt(.5, 0.7, 0.6, 0, 0, 0, 0.0, 1.0, 0.0);
 
 	// start drawing
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
-	for (int i = 0; i < 1; i++)
-	{
-		glPushMatrix();
-			glTranslatef(pieces[i].x, pieces[i].y, pieces[i].z);
-			glRotatef(pieces[i].roll, 0, 1, 0);
-			glRotatef(pieces[i].yaw, 1, 0, 0);
-			glRotatef(pieces[i].pitch, 1, 0, 0);
-			glScaled(.1, .1, .1);
-			pieces[i].model();
-		glPopMatrix();
-	}
+
+	DrawPiecesOnBoard();
+
+	glPushMatrix();
+	glTranslatef(-.7, .3, 0);
+	glRotatef(-90, 1, 0, 0);
+	glScaled(.1,.1,.1);
+	DrawBoard();
+	glPopMatrix();
 
 	glutSwapBuffers();
 }
 
+
+
+//animate function for the pieces
 void animateFunc(int value)
 {
 	for(int i = 0; i < 32; i++)
@@ -299,6 +452,7 @@ void animateFunc(int value)
 	glutTimerFunc(30, animateFunc, value);
 }
 
+//keyboard func for 1-5 and a
 void myKeyboard(unsigned char theKey, int x, int y)
 {
         switch(theKey)
@@ -309,16 +463,16 @@ void myKeyboard(unsigned char theKey, int x, int y)
 					pieces[0].model = &DrawQueen;
 					break;
 				case '2':
-					pieces[0].model = &DrawKing;
+					pieces[1].model = &DrawKing;
 					break;
 				case '3':
-					pieces[0].model = &DrawRook;
+					pieces[2].model = &DrawRook;
 					break;
 				case '4':
-					pieces[0].model = &DrawBishop;
+					pieces[3].model = &DrawBishop;
 					break;
 				case '5':
-					pieces[0].model = &DrawPawn;
+					pieces[4].model = &DrawPawn;
 					break;
 				case '6':
 					break;
@@ -330,7 +484,6 @@ void myKeyboard(unsigned char theKey, int x, int y)
 						pieces[0].pitch=0;
 						pieces[0].yaw=0;
 						pieces[0].roll=0;
-
 
 					}
 					else
@@ -347,7 +500,17 @@ void myKeyboard(unsigned char theKey, int x, int y)
 void MyInit()
 {
 	pieces[0].model = &DrawBishop;
-	pieces[0].isMoving = true;
+	pieces[0].isMoving = false;
+	pieces[1].model = &DrawKing;
+	pieces[1].isMoving = false;
+	pieces[2].model = &DrawRook;
+	pieces[2].isMoving = false;
+	pieces[3].model = &DrawQueen;
+	pieces[3].isMoving = false;
+	pieces[4].model = &DrawPawn;
+	pieces[4].isMoving = false;
+	pieces[5].model = &DrawKnight;
+	pieces[5].isMoving = false;
 }
 
 
