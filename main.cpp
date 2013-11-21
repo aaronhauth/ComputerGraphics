@@ -96,8 +96,40 @@ void DrawKing() {
         glPopMatrix();
 }
 
-void DrawKnight() {
+void DrawKnight() 
+{
+	GLUquadric *solid;
+	solid = gluNewQuadric();
+	gluQuadricDrawStyle(solid, GLU_FILL);
+	glPushMatrix();
+		glRotated(-90, 1, 0, 0);
+		gluDisk(solid, 0, 1, 20, 1);
+		gluCylinder(solid, 1, .75, 1, 20, 1);
+		glTranslated(0, 0, 1);
+		gluDisk(solid, 0, .75, 20, 1);
+		glScaled(1, .85, 1);
+		gluCylinder(solid, .6, .3, 3, 20, 1);
 
+
+		glTranslated(0, 0, 3.1);
+
+		glPushMatrix();
+			glTranslated(.1,.25,0);
+			glPushMatrix();
+			glScaled(.5, .2, 1);
+			gluCylinder(solid, .3, 0, 1, 6, 1);
+			glPopMatrix();
+			glTranslated(0, -.5, 0);
+			glScaled(.5, .2, 1);
+			gluCylinder(solid, .3, 0, 1, 6, 1);
+		glPopMatrix();
+
+		glRotated(-90, 0, 1, 0);
+		glTranslated(0, 0, -0.25);
+		glRotated(30, 0, 0, 1);
+		gluDisk(solid, 0, .5, 3, 1);
+		gluCylinder(solid, .5, .2, 1, 3, 2);
+	glPopMatrix();
 }
 
 
