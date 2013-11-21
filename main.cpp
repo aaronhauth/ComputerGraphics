@@ -76,6 +76,39 @@ void DrawBishop() {
 	glPopMatrix();
 }
 
+
+Point3* ClockMesh()
+{
+	Point3 *ar=new Point3 [18];
+	for(int i = 0; i < 6; i++)
+	{
+		ar[i].set(.5*cos((i)*3.14/6)+.5, .5*sin((i)*3.14/6)+1, 0);
+	}
+	for(int i = 6; i < 13; i++)
+	{
+		ar[i].set(.5*cos((i-6)*3.14/6)-.5, .5*sin((i-6)*3.14/6)+1, 0);
+	}
+	ar[13].set(-1.5, 1, 0);
+	ar[14].set(-1.5, 0, 0);
+	ar[15].set(1.5, 0, 0);
+	ar[16].set(1.5, 1, 0);
+	ar[17].set(1, 1, 0);
+
+
+	return ar;
+
+}
+
+void DrawClock()
+{
+	
+	Point3* base = ClockMesh();
+	ExtrudedMesh mesh(base, 18, 2);
+	mesh.draw();
+	delete [] base;//release memory
+	
+}
+
 //function that draws king
 void DrawKing() {
 	 GLUquadric *solid = gluNewQuadric();
