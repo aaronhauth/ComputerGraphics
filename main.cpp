@@ -25,6 +25,7 @@
 #include <GLUT/glut.h>      
 #endif
 
+#include "extrudedMesh.h"
 #include <cmath>
 #include <stdlib.h>
 using namespace std;
@@ -34,17 +35,80 @@ struct chessPiece
 {
 	bool isMoving;
 	int x, y, z, i;
+	float scalex, scaley, scalez;
+	bool isBlack;
 	int roll, yaw, pitch;
 	void (*model)();
 
 	chessPiece()
 	{x=0;y=0;z=0;roll=0;yaw=0; pitch=0; isMoving=false; model=NULL;}
 	chessPiece(int newx, int newy, int newz, void(*drawFunc)(void))
-	{x=newx; y=newy; z=newz; i=0; roll=0; yaw=0; pitch=0; isMoving=false; model = drawFunc;}
+	{x=newx; y=newy; z=newz; i=0; roll=0; yaw=0; pitch=0; isMoving=false; model = drawFunc; isBlack=true; scalex=1;scaley=1;scalez=1;}
 };
 
+int theta=0;
+int clockA=0, clockB=0, clockCount=0;
 int count;
+int zoom = 7;
 chessPiece pieces[32];
+
+Point3* ClockMesh()
+{
+	Point3 *ar=new Point3 [19];
+	for(int i = 0; i < 6; i++)
+	{
+		ar[i].set(.5*cos((i)*3.14/5)+.5, .5*sin((i)*3.14/5)+1, 0);
+	}
+	ar[6].set(0, 1, 0);
+	for(int i = 7; i < 14; i++)
+	{
+		ar[i].set(.5*cos((i-6)*3.14/5)-.5, .5*sin((i-6)*3.14/5)+1, 0);
+	}
+
+	ar[14].set(-1.5, 1, 0);
+	ar[15].set(-1.5, 0, 0);
+	ar[16].set(1.5, 0, 0);
+	ar[17].set(1.5, 1, 0);
+	ar[18].set(1, 1, 0);
+
+
+	return ar;
+
+}
+void DrawClockFace()
+{
+	GLUquadric *solid = gluNewQuadric();
+	glPushMatrix();
+		glColor3f(1,1,1);
+		glTranslated(0, 0, -.01);
+		gluDisk(solid, 0, 0.4, 20, 1);
+		glTranslated(0,0,-.1);
+		glColor3f(0,0,0);
+		glRotated(-90,1,0,0);
+		glScaled(.1, .05, .4);
+		gluCylinder(solid, 1, 0, 1, 3, 1);
+
+	glPopMatrix();
+}
+
+void DrawClock()
+{
+	Point3* base = ClockMesh();
+	ExtrudedMesh mesh(base, 18, 1);
+	mesh.draw();
+	glPushMatrix();
+		glTranslated(.5,.75,0);
+		glRotated(clockA,0,0,1);
+		DrawClockFace();
+	glPopMatrix();
+	glPushMatrix();
+		glTranslated(-.5,.75,0);
+		glRotated(clockB,0,0,1);
+		DrawClockFace();
+	glPopMatrix();
+	delete [] base;//release memory
+	
+}
 
 
 
@@ -78,38 +142,6 @@ void DrawBishop() {
 	glPopMatrix();
 }
 
-
-Point3* ClockMesh()
-{
-	Point3 *ar=new Point3 [18];
-	for(int i = 0; i < 6; i++)
-	{
-		ar[i].set(.5*cos((i)*3.14/6)+.5, .5*sin((i)*3.14/6)+1, 0);
-	}
-	for(int i = 6; i < 13; i++)
-	{
-		ar[i].set(.5*cos((i-6)*3.14/6)-.5, .5*sin((i-6)*3.14/6)+1, 0);
-	}
-	ar[13].set(-1.5, 1, 0);
-	ar[14].set(-1.5, 0, 0);
-	ar[15].set(1.5, 0, 0);
-	ar[16].set(1.5, 1, 0);
-	ar[17].set(1, 1, 0);
-
-
-	return ar;
-
-}
-
-void DrawClock()
-{
-	
-	Point3* base = ClockMesh();
-	ExtrudedMesh mesh(base, 18, 2);
-	mesh.draw();
-	delete [] base;//release memory
-	
-}
 
 //function that draws king
 void DrawKing() {
