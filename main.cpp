@@ -49,6 +49,7 @@ struct chessPiece
 int theta=0;
 int clockA=0, clockB=0, clockCount=0;
 int count;
+float panx=0, pany=0;
 int zoom = 7;
 chessPiece pieces[32];
 
@@ -626,8 +627,9 @@ void DisplaySolid()
 	// start drawing
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 	glPushMatrix();
-	
 	glRotated(theta, 0, 1, 0);
+	glTranslated(panx, 0, pany);
+
 	glPushMatrix();
 	glTranslated(-.02, -.049, -0.035);
 	DrawPiecesOnBoard();
@@ -683,22 +685,18 @@ void myKeyboard(unsigned char theKey, int x, int y)
         {
                 case 'q':   // end display
                         exit (0);
-				case '1':
-					pieces[0].model = &DrawQueen;
+				case'e':
+					pany -= .01;
 					break;
-				case '2':
-					pieces[1].model = &DrawKing;
+
+				case 's':
+					panx -= .01;
 					break;
-				case '3':
-					pieces[2].model = &DrawRook;
+				case 'd':
+					pany += .01;
 					break;
-				case '4':
-					pieces[3].model = &DrawBishop;
-					break;
-				case '5':
-					pieces[4].model = &DrawPawn;
-					break;
-				case '6':
+				case 'f':
+					panx += .01;
 					break;
 				case'm':
 					theta+=5;
