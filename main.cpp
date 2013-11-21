@@ -34,10 +34,10 @@ using namespace std;
 struct chessPiece
 {
 	bool isMoving;
-	int x, y, z, i;
+	float x, y, z;
 	float scalex, scaley, scalez;
 	bool isBlack;
-	int roll, yaw, pitch;
+	int roll, yaw, pitch, i;
 	void (*model)();
 
 	chessPiece()
@@ -314,6 +314,7 @@ void DrawBoard()
 	glPopMatrix();
 }
 void DrawPiecesOnBoard() {
+			glColor3f(1,1,1);
 			glPushMatrix();
 			glTranslatef(-.69, .4, -.185);
 			glRotatef(pieces[0].roll, 0, 1, 0);
@@ -452,6 +453,7 @@ void DrawPiecesOnBoard() {
 			
 
 			//right side
+			glColor3f(0,0,0);
 			glPushMatrix();
 			glTranslatef(.022, .4, -.175);
 			glRotatef(pieces[0].roll, 0, 1, 0);
@@ -623,8 +625,21 @@ void DisplaySolid()
 
 	// start drawing
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
-
+	glPushMatrix();
+	
+	glRotated(theta, 0, 1, 0);
+	glPushMatrix();
+	glTranslated(-.02, -.049, -0.035);
 	DrawPiecesOnBoard();
+	glPopMatrix();
+
+	glPushMatrix();
+		glColor3f(0.6, 0.4, 0.2);
+		glTranslated(-.3, .25, -1);
+		glScaled(.15, .15, .15);
+		glRotated(180, 0, 1, 0);
+		DrawClock();
+	glPopMatrix();
 
 	glPushMatrix();
 	glTranslatef(-.7, .3, 0);
@@ -632,13 +647,12 @@ void DisplaySolid()
 	glScaled(.1,.1,.1);
 	DrawBoard();
 	glPopMatrix();
-
+	glPopMatrix();
 	glutSwapBuffers();
 }
 
 
 
-//animate function for the pieces
 void animateFunc(int value)
 {
 	for(int i = 0; i < 32; i++)
@@ -646,14 +660,22 @@ void animateFunc(int value)
 		if (pieces[i].isMoving)
 		{
 			pieces[i].yaw = 35*sin(((pieces[i].i++)*3.14)/180);
-			if (pieces[0].i == 180)
-				pieces[0].isMoving = false;
+			if (pieces[i].i == 180)
+			{
+				pieces[i].isMoving = false;
+			}
 		}
 	}
+	if (clockCount < 100)
+		clockA+=5;
+	else
+		clockB+=5;
+	if (clockCount == 200)
+		clockCount=0;
+	clockCount++;
 	glutPostRedisplay();
 	glutTimerFunc(30, animateFunc, value);
 }
-
 //keyboard func for 1-5 and a
 void myKeyboard(unsigned char theKey, int x, int y)
 {
@@ -677,6 +699,12 @@ void myKeyboard(unsigned char theKey, int x, int y)
 					pieces[4].model = &DrawPawn;
 					break;
 				case '6':
+					break;
+				case'm':
+					theta+=5;
+					break;
+				case'n':
+					theta-=5;
 					break;
 				case 'a':
 					if (pieces[0].isMoving)
