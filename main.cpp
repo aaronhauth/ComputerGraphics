@@ -44,7 +44,69 @@ struct chessPiece
 };
 
 int count;
+int clockA=0, clockB=0, clockCount=0;
 chessPiece pieces[32];
+
+
+
+
+Point3* ClockMesh()
+{
+	Point3 *ar=new Point3 [19];
+	for(int i = 0; i < 6; i++)
+	{
+		ar[i].set(.5*cos((i)*3.14/5)+.5, .5*sin((i)*3.14/5)+1, 0);
+	}
+	ar[6].set(0, 1, 0);
+	for(int i = 7; i < 14; i++)
+	{
+		ar[i].set(.5*cos((i-6)*3.14/5)-.5, .5*sin((i-6)*3.14/5)+1, 0);
+	}
+
+	ar[14].set(-1.5, 1, 0);
+	ar[15].set(-1.5, 0, 0);
+	ar[16].set(1.5, 0, 0);
+	ar[17].set(1.5, 1, 0);
+	ar[18].set(1, 1, 0);
+
+
+	return ar;
+
+}
+void DrawClockFace()
+{
+	GLUquadric *solid = gluNewQuadric();
+	glPushMatrix();
+		glColor3f(1,1,1);
+		glTranslated(0, 0, -.01);
+		gluDisk(solid, 0, 0.4, 20, 1);
+		glTranslated(0,0,-.1);
+		glColor3f(0,0,0);
+		glRotated(-90,1,0,0);
+		glScaled(.1, .05, .4);
+		gluCylinder(solid, 1, 0, 1, 3, 1);
+
+	glPopMatrix();
+}
+
+void DrawClock()
+{
+	Point3* base = ClockMesh();
+	ExtrudedMesh mesh(base, 18, 1);
+	mesh.draw();
+	glPushMatrix();
+		glTranslated(.5,.75,0);
+		glRotated(clockA,0,0,1);
+		DrawClockFace();
+	glPopMatrix();
+	glPushMatrix();
+		glTranslated(-.5,.75,0);
+		glRotated(clockB,0,0,1);
+		DrawClockFace();
+	glPopMatrix();
+	delete [] base;//release memory
+	
+}
 
 
 //function that draws bishop
@@ -469,7 +531,6 @@ void DisplaySolid()
 
 
 
-//animate function for the pieces
 void animateFunc(int value)
 {
 	for(int i = 0; i < 32; i++)
@@ -477,13 +538,23 @@ void animateFunc(int value)
 		if (pieces[i].isMoving)
 		{
 			pieces[i].yaw = 35*sin(((pieces[i].i++)*3.14)/180);
-			if (pieces[0].i == 180)
-				pieces[0].isMoving = false;
+			if (pieces[i].i == 180)
+			{
+				pieces[i].isMoving = false;
+			}
 		}
 	}
+	if (clockCount < 100)
+		clockA+=5;
+	else
+		clockB+=5;
+	if (clockCount == 200)
+		clockCount=0;
+	clockCount++;
 	glutPostRedisplay();
 	glutTimerFunc(30, animateFunc, value);
 }
+
 
 //keyboard func for 1-5 and a
 void myKeyboard(unsigned char theKey, int x, int y)
