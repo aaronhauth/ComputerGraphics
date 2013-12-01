@@ -35,6 +35,8 @@ struct chessPiece
 {
 	bool isMoving;
 	float x, y, z;
+	float dx, dy, dz;
+
 	float scalex, scaley, scalez;
 	bool isBlack;
 	int roll, yaw, pitch, i;
@@ -314,287 +316,6 @@ void DrawBoard()
 	}
 	glPopMatrix();
 }
-void DrawPiecesOnBoard() {
-
-	
-			glColor3f(1,1,1);
-			glPushMatrix();
-			glTranslatef(-.69, .4, -.185);
-			glRotatef(pieces[0].roll, 0, 1, 0);
-			glRotatef(pieces[0].yaw, 1, 0, 0);
-			glRotatef(pieces[0].pitch, 1, 0, 0);
-			glScaled(.05, .05, .05);
-			pieces[0].model();
-			glPopMatrix();
-			glPushMatrix();
-			glTranslatef(-.68, .4, -.469);
-			glRotatef(pieces[0].roll, 0, 1, 0);
-			glRotatef(pieces[0].yaw, 1, 0, 0);
-			glRotatef(pieces[0].pitch, 1, 0, 0);
-			glScaled(.05, .05, .05);
-			pieces[0].model();
-			glPopMatrix();
-
-			glPushMatrix();
-			glTranslatef(-.68, .4, -.37);
-			glRotatef(pieces[1].roll, 0, 1, 0);
-			glRotatef(pieces[1].yaw, 1, 0, 0);
-			glRotatef(pieces[1].pitch, 1, 0, 0);
-			glScaled(.05, .05, .05);
-			pieces[1].model();
-			glPopMatrix();
-			
-			glPushMatrix();
-			glTranslatef(-.68, .4, .02);
-			glRotatef(pieces[2].roll, 0, 1, 0);
-			glRotatef(pieces[2].yaw, 1, 0, 0);
-			glRotatef(pieces[2].pitch, 1, 0, 0);
-			glScaled(.05, .05, .05);
-			pieces[2].model();
-			glPopMatrix();
-			glPushMatrix();
-			glTranslatef(-.669, .4, -.665);
-			glRotatef(pieces[2].roll, 0, 1, 0);
-			glRotatef(pieces[2].yaw, 1, 0, 0);
-			glRotatef(pieces[2].pitch, 1, 0, 0);
-			glScaled(.05, .05, .05);
-			pieces[2].model();
-			glPopMatrix();
-
-			glPushMatrix();
-			glTranslatef(-.68, .4, -.283 );
-			glRotatef(pieces[3].roll, 0, 1, 0);
-			glRotatef(pieces[3].yaw, 1, 0, 0);
-			glRotatef(pieces[3].pitch, 1, 0, 0);
-			glScaled(.05, .05, .05);
-			pieces[3].model();
-			glPopMatrix();
-			
-			/*
-			glPushMatrix();
-			glTranslatef(-.567, .4, .035);
-			glRotatef(pieces[4].roll, 0, 1, 0);
-			glRotatef(pieces[4].yaw, 1, 0, 0);
-			glRotatef(pieces[4].pitch, 1, 0, 0);
-			glScaled(.07, .07, .07);
-			pieces[4].model();
-			glPopMatrix();
-			glPushMatrix();
-			glTranslatef(-.567, .4, -.075);
-			glRotatef(pieces[4].roll, 0, 1, 0);
-			glRotatef(pieces[4].yaw, 1, 0, 0);
-			glRotatef(pieces[4].pitch, 1, 0, 0);
-			glScaled(.07, .07, .07);
-			pieces[4].model();
-			glPopMatrix();
-			glPushMatrix();
-			glTranslatef(-.567, .4, -.172);
-			glRotatef(pieces[4].roll, 0, 1, 0);
-			glRotatef(pieces[4].yaw, 1, 0, 0);
-			glRotatef(pieces[4].pitch, 1, 0, 0);
-			glScaled(.07, .07, .07);
-			pieces[4].model();
-			glPopMatrix();
-			glPushMatrix();
-			glTranslatef(-.567, .4, -.275);
-			glRotatef(pieces[4].roll, 0, 1, 0);
-			glRotatef(pieces[4].yaw, 1, 0, 0);
-			glRotatef(pieces[4].pitch, 1, 0, 0);
-			glScaled(.07, .07, .07);
-			pieces[4].model();
-			glPopMatrix();
-			glPushMatrix();
-			glTranslatef(-.567, .4, -.377);
-			glRotatef(pieces[4].roll, 0, 1, 0);
-			glRotatef(pieces[4].yaw, 1, 0, 0);
-			glRotatef(pieces[4].pitch, 1, 0, 0);
-			glScaled(.07, .07, .07);
-			pieces[4].model();
-			glPopMatrix();
-			glPushMatrix();
-			glTranslatef(-.567, .4, -.476);
-			glRotatef(pieces[4].roll, 0, 1, 0);
-			glRotatef(pieces[4].yaw, 1, 0, 0);
-			glRotatef(pieces[4].pitch, 1, 0, 0);
-			glScaled(.07, .07, .07);
-			pieces[4].model();
-			glPopMatrix();
-			glPushMatrix();
-			glTranslatef(-.567, .4, -.570);
-			glRotatef(pieces[4].roll, 0, 1, 0);
-			glRotatef(pieces[4].yaw, 1, 0, 0);
-			glRotatef(pieces[4].pitch, 1, 0, 0);
-			glScaled(.07, .07, .07);
-			pieces[4].model();
-			glPopMatrix();
-			glPushMatrix();
-			glTranslatef(-.567, .4, -.670);
-			glRotatef(pieces[4].roll, 0, 1, 0);
-			glRotatef(pieces[4].yaw, 1, 0, 0);
-			glRotatef(pieces[4].pitch, 1, 0, 0);
-			glScaled(.07, .07, .07);
-			pieces[4].model();
-			glPopMatrix();
-			*/
-			glPushMatrix();
-			glTranslatef(-.68, .4, -.1);
-			glRotatef(180, 0, 1, 0);
-			glRotatef(pieces[5].roll, 0, 1, 0);
-			glRotatef(pieces[5].yaw, 1, 0, 0);
-			glRotatef(pieces[5].pitch, 1, 0, 0);
-			glScaled(.06, .06, .06);
-			pieces[5].model();
-			glPopMatrix();
-			glPushMatrix();
-			glTranslatef(-.68, .4, -.555);
-			glRotatef(180, 0, 1, 0);
-			glRotatef(pieces[5].roll, 0, 1, 0);
-			glRotatef(pieces[5].yaw, 1, 0, 0);
-			glRotatef(pieces[5].pitch, 1, 0, 0);
-			glScaled(.06, .06, .06);
-			pieces[5].model();
-			glPopMatrix();
-			
-
-			//right side
-			glColor3f(0,0,0);
-			glPushMatrix();
-			glTranslatef(.022, .4, -.175);
-			glRotatef(pieces[0].roll, 0, 1, 0);
-			glRotatef(pieces[0].yaw, 1, 0, 0);
-			glRotatef(pieces[0].pitch, 1, 0, 0);
-			glScaled(.05, .05, .05);
-			pieces[0].model();
-			glPopMatrix();
-			glPushMatrix();
-			glTranslatef(.022, .4, -.469);
-			glRotatef(pieces[0].roll, 0, 1, 0);
-			glRotatef(pieces[0].yaw, 1, 0, 0);
-			glRotatef(pieces[0].pitch, 1, 0, 0);
-			glScaled(.05, .05, .05);
-			pieces[0].model();
-			glPopMatrix();
-
-			glPushMatrix();
-			glTranslatef(.022, .4, -.37);
-			glRotatef(pieces[1].roll, 0, 1, 0);
-			glRotatef(pieces[1].yaw, 1, 0, 0);
-			glRotatef(pieces[1].pitch, 1, 0, 0);
-			glScaled(.05, .05, .05);
-			pieces[1].model();
-			glPopMatrix();
-			
-			glPushMatrix();
-			glTranslatef(.022, .4, .02);
-			glRotatef(pieces[2].roll, 0, 1, 0);
-			glRotatef(pieces[2].yaw, 1, 0, 0);
-			glRotatef(pieces[2].pitch, 1, 0, 0);
-			glScaled(.05, .05, .05);
-			pieces[2].model();
-			glPopMatrix();
-			glPushMatrix();
-			glTranslatef(.022, .4, -.665);
-			glRotatef(pieces[2].roll, 0, 1, 0);
-			glRotatef(pieces[2].yaw, 1, 0, 0);
-			glRotatef(pieces[2].pitch, 1, 0, 0);
-			glScaled(.05, .05, .05);
-			pieces[2].model();
-			glPopMatrix();
-
-			glPushMatrix();
-			glTranslatef(.022, .4, -.283 );
-			glRotatef(pieces[3].roll, 0, 1, 0);
-			glRotatef(pieces[3].yaw, 1, 0, 0);
-			glRotatef(pieces[3].pitch, 1, 0, 0);
-			glScaled(.05, .05, .05);
-			pieces[3].model();
-			glPopMatrix();
-			/*
-			glPushMatrix();
-			glTranslatef(-.09, .4, .035);
-			glRotatef(pieces[4].roll, 0, 1, 0);
-			glRotatef(pieces[4].yaw, 1, 0, 0);
-			glRotatef(pieces[4].pitch, 1, 0, 0);
-			glScaled(.07, .07, .07);
-			pieces[4].model();
-			glPopMatrix();
-			glPushMatrix();
-			glTranslatef(-.09, .4, -.075);
-			glRotatef(pieces[4].roll, 0, 1, 0);
-			glRotatef(pieces[4].yaw, 1, 0, 0);
-			glRotatef(pieces[4].pitch, 1, 0, 0);
-			glScaled(.07, .07, .07);
-			pieces[4].model();
-			glPopMatrix();
-			glPushMatrix();
-			glTranslatef(-.09, .4, -.172);
-			glRotatef(pieces[4].roll, 0, 1, 0);
-			glRotatef(pieces[4].yaw, 1, 0, 0);
-			glRotatef(pieces[4].pitch, 1, 0, 0);
-			glScaled(.07, .07, .07);
-			pieces[4].model();
-			glPopMatrix();
-			glPushMatrix();
-			glTranslatef(-.09, .4, -.275);
-			glRotatef(pieces[4].roll, 0, 1, 0);
-			glRotatef(pieces[4].yaw, 1, 0, 0);
-			glRotatef(pieces[4].pitch, 1, 0, 0);
-			glScaled(.07, .07, .07);
-			pieces[4].model();
-			glPopMatrix();
-			glPushMatrix();
-			glTranslatef(-.09, .4, -.377);
-			glRotatef(pieces[4].roll, 0, 1, 0);
-			glRotatef(pieces[4].yaw, 1, 0, 0);
-			glRotatef(pieces[4].pitch, 1, 0, 0);
-			glScaled(.07, .07, .07);
-			pieces[4].model();
-			glPopMatrix();
-			glPushMatrix();
-			glTranslatef(-.09, .4, -.476);
-			glRotatef(pieces[4].roll, 0, 1, 0);
-			glRotatef(pieces[4].yaw, 1, 0, 0);
-			glRotatef(pieces[4].pitch, 1, 0, 0);
-			glScaled(.07, .07, .07);
-			pieces[4].model();
-			glPopMatrix();
-			glPushMatrix();
-			glTranslatef(-.09, .4, -.570);
-			glRotatef(pieces[4].roll, 0, 1, 0);
-			glRotatef(pieces[4].yaw, 1, 0, 0);
-			glRotatef(pieces[4].pitch, 1, 0, 0);
-			glScaled(.07, .07, .07);
-			pieces[4].model();
-			glPopMatrix();
-			glPushMatrix();
-			glTranslatef(-.09, .4, -.670);
-			glRotatef(pieces[4].roll, 0, 1, 0);
-			glRotatef(pieces[4].yaw, 1, 0, 0);
-			glRotatef(pieces[4].pitch, 1, 0, 0);
-			glScaled(.07, .07, .07);
-			pieces[4].model();
-			glPopMatrix();*/
-
-			glPushMatrix();
-			glTranslatef(.022, .4, -.1);
-			glRotatef(pieces[5].roll, 0, 1, 0);
-			glRotatef(pieces[5].yaw, 1, 0, 0);
-			glRotatef(pieces[5].pitch, 1, 0, 0);
-			glScaled(.06, .06, .06);
-			pieces[5].model();
-			glPopMatrix();
-			glPushMatrix();
-			glTranslatef(.022, .4, -.555);
-			glRotatef(pieces[5].roll, 0, 1, 0);
-			glRotatef(pieces[5].yaw, 1, 0, 0);
-			glRotatef(pieces[5].pitch, 1, 0, 0);
-			glScaled(.06, .06, .06);
-			pieces[5].model();
-			glPopMatrix();
-			
-			
-	
-}
 
 
 //the draw function+
@@ -681,7 +402,9 @@ void animateFunc(int value)
 	{
 		if (pieces[i].isMoving)
 		{
-			pieces[i].yaw = 35*sin(((pieces[i].i++)*3.14)/180);
+			pieces[i].x += pieces[i].dx;
+			pieces[i].y += pieces[i].dy;
+			pieces[i].z += pieces[i].dz;
 			if (pieces[i].i == 180)
 			{
 				pieces[i].isMoving = false;
@@ -735,20 +458,6 @@ void myKeyboard(unsigned char theKey, int x, int y)
 
 void MyInit()
 {
-	pieces[0].model = &DrawBishop;
-	pieces[0].isMoving = false;
-	pieces[1].model = &DrawKing;
-	pieces[1].isMoving = false;
-	pieces[2].model = &DrawRook;
-	pieces[2].isMoving = false;
-	pieces[3].model = &DrawQueen;
-	pieces[3].isMoving = false;
-	pieces[4].model = &DrawPawn;
-	pieces[4].isMoving = false;
-	pieces[5].model = &DrawKnight;
-	pieces[5].isMoving = false;
-	
-
 	//spawn ALL the pawns
 	for (int i = 0; i < 2; i++)
 	{
@@ -809,6 +518,34 @@ void MyInit()
 				pieces[(i*2)+j + 24].roll = 180;
 			}
 		}
+		//-.68, .4, -.37);(.022, .4, -.37);
+	}
+
+	for (int i = 0; i < 2; i++)
+	{
+
+		pieces[28 + i].x = -.68 + 0.7*i;
+		pieces[28 + i].y = .4;
+		pieces[28 + i].z = -.37;
+		pieces[28 + i].model = &DrawKing;
+		pieces[28 + i].scalex= .05;
+		pieces[28 + i].scaley= .05;
+		pieces[28 + i].scalez= .05;
+		pieces[28 + i].isBlack = i;
+		//-.68, .4, -.37);(.022, .4, -.37);
+	}
+		for (int i = 0; i < 2; i++)
+	{
+
+		pieces[30 + i].x = -.68 + 0.7*i;
+		pieces[30 + i].y = .4;
+		pieces[30 + i].z = -.283;
+		pieces[30 + i].model = &DrawQueen;
+		pieces[30 + i].scalex= .05;
+		pieces[30 + i].scaley= .05;
+		pieces[30 + i].scalez= .05;
+		pieces[30 + i].isBlack = i;
+		//-.68, .4, -.37);(.022, .4, -.37);
 	}
 
 }
