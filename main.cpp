@@ -315,6 +315,8 @@ void DrawBoard()
 	glPopMatrix();
 }
 void DrawPiecesOnBoard() {
+
+	
 			glColor3f(1,1,1);
 			glPushMatrix();
 			glTranslatef(-.69, .4, -.185);
@@ -367,7 +369,8 @@ void DrawPiecesOnBoard() {
 			glScaled(.05, .05, .05);
 			pieces[3].model();
 			glPopMatrix();
-
+			
+			/*
 			glPushMatrix();
 			glTranslatef(-.567, .4, .035);
 			glRotatef(pieces[4].roll, 0, 1, 0);
@@ -432,7 +435,7 @@ void DrawPiecesOnBoard() {
 			glScaled(.07, .07, .07);
 			pieces[4].model();
 			glPopMatrix();
-
+			*/
 			glPushMatrix();
 			glTranslatef(-.68, .4, -.1);
 			glRotatef(180, 0, 1, 0);
@@ -506,7 +509,7 @@ void DrawPiecesOnBoard() {
 			glScaled(.05, .05, .05);
 			pieces[3].model();
 			glPopMatrix();
-
+			/*
 			glPushMatrix();
 			glTranslatef(-.09, .4, .035);
 			glRotatef(pieces[4].roll, 0, 1, 0);
@@ -570,7 +573,7 @@ void DrawPiecesOnBoard() {
 			glRotatef(pieces[4].pitch, 1, 0, 0);
 			glScaled(.07, .07, .07);
 			pieces[4].model();
-			glPopMatrix();
+			glPopMatrix();*/
 
 			glPushMatrix();
 			glTranslatef(.022, .4, -.1);
@@ -588,7 +591,8 @@ void DrawPiecesOnBoard() {
 			glScaled(.06, .06, .06);
 			pieces[5].model();
 			glPopMatrix();
-
+			
+			
 	
 }
 
@@ -617,12 +621,10 @@ void DisplaySolid()
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	double winHt = 1.0; // half-height of the window
-	//glOrtho(-winHt*64/48.0, winHt*64/48.0, -winHt, winHt, 0.1, 100.0);
 	glOrtho(-1, 1, -1, 1, -.1, 100.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	gluLookAt(5, 10, 5, 0, 1, 0, 0.0, 1.0, 0.0);
-//	gluLookAt(.5, 0.7, 0.6, 0, 0, 0, 0.0, 1.0, 0.0);
 
 	// start drawing
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
@@ -631,8 +633,26 @@ void DisplaySolid()
 	glTranslated(panx, 0, pany);
 
 	glPushMatrix();
-	glTranslated(-.02, -.049, -0.035);
-	DrawPiecesOnBoard();
+		glTranslated(-.02, -.049, -0.035);
+		//DrawPiecesOnBoard();
+		for(int i = 0; i < 32; i++)
+		{
+			if (pieces[i].model == NULL)
+					continue;
+			glPushMatrix();
+				glTranslated(pieces[i].x, pieces[i].y, pieces[i].z);
+				glRotated(pieces[i].yaw, 0, 0, 1);
+				glRotated(pieces[i].pitch, 1, 0, 0);
+				glRotated(pieces[i].roll, 0, 1, 0);
+				glScaled(pieces[i].scalex,pieces[i].scaley, pieces[i].scalez);
+				if(pieces[i].isBlack)
+					glColor3f(.1,.1,.1);
+				else
+					glColor3f(.9,.9,.9);
+				
+				pieces[i].model();
+			glPopMatrix();
+		}
 	glPopMatrix();
 
 	glPushMatrix();
@@ -665,6 +685,7 @@ void animateFunc(int value)
 			if (pieces[i].i == 180)
 			{
 				pieces[i].isMoving = false;
+				pieces[i].i = 0;
 			}
 		}
 	}
@@ -685,19 +706,6 @@ void myKeyboard(unsigned char theKey, int x, int y)
         {
                 case 'q':   // end display
                         exit (0);
-				case'e':
-					pany -= .01;
-					break;
-
-				case 's':
-					panx -= .01;
-					break;
-				case 'd':
-					pany += .01;
-					break;
-				case 'f':
-					panx += .01;
-					break;
 				case'm':
 					theta+=5;
 					break;
@@ -739,6 +747,70 @@ void MyInit()
 	pieces[4].isMoving = false;
 	pieces[5].model = &DrawKnight;
 	pieces[5].isMoving = false;
+	
+
+	//spawn ALL the pawns
+	for (int i = 0; i < 2; i++)
+	{
+		for (int j = 0; j < 8; j++) //-.09
+		{
+			pieces[(i*8)+j].x = -.575 + 0.5*i;
+			pieces[(i*8)+j].y = .4;
+			pieces[(i*8)+j].z = .035 - .10*j;
+			pieces[(i*8)+j].model = &DrawPawn;
+			pieces[(i*8)+j].scalex= .06;
+			pieces[(i*8)+j].scaley= .07;
+			pieces[(i*8)+j].scalez= .06;
+			pieces[(i*8)+j].isBlack = i;
+		}
+	}
+	for (int i = 0; i < 2; i++)		// draw rooks
+	{
+		for (int j = 0; j < 2; j++)
+		{
+			pieces[(i*2)+j + 16].x = -.68 + 0.7*i;
+			pieces[(i*2)+j + 16].y = .4;
+			pieces[(i*2)+j + 16].z = .03 - 0.695*j;
+			pieces[(i*2)+j + 16].model = &DrawRook;
+			pieces[(i*2)+j + 16].scalex= .05;
+			pieces[(i*2)+j + 16].scaley= .05;
+			pieces[(i*2)+j + 16].scalez= .05;
+			pieces[(i*2)+j + 16].isBlack = i;
+		}
+	}
+	for (int i = 0; i < 2; i++)
+	{
+		for (int j = 0; j < 2; j++)
+		{
+			pieces[(i*2)+j + 20].x = -.68 + 0.7*i;
+			pieces[(i*2)+j + 20].y = .4;
+			pieces[(i*2)+j + 20].z = -.175 - 0.284*j;
+			pieces[(i*2)+j + 20].model = &DrawBishop;
+			pieces[(i*2)+j + 20].scalex= .05;
+			pieces[(i*2)+j + 20].scaley= .05;
+			pieces[(i*2)+j + 20].scalez= .05;
+			pieces[(i*2)+j + 20].isBlack = i;
+		}
+	}
+	for (int i = 0; i < 2; i++)
+	{
+		for (int j = 0; j < 2; j++)
+		{
+			pieces[(i*2)+j + 24].x = -.68 + 0.7*i;
+			pieces[(i*2)+j + 24].y = .4;
+			pieces[(i*2)+j + 24].z = -.07 - 0.495*j;
+			pieces[(i*2)+j + 24].model = &DrawKnight;
+			pieces[(i*2)+j + 24].scalex= .05;
+			pieces[(i*2)+j + 24].scaley= .05;
+			pieces[(i*2)+j + 24].scalez= .05;
+			pieces[(i*2)+j + 24].isBlack = i;
+			if (!pieces[(i*2)+j + 24].isBlack)
+			{
+				pieces[(i*2)+j + 24].roll = 180;
+			}
+		}
+	}
+
 }
 
 
