@@ -48,16 +48,26 @@ struct chessPiece
 	{x=newx; y=newy; z=newz; i=0; roll=0; yaw=0; pitch=0; isMoving=false; model = drawFunc; isBlack=true; scalex=1;scaley=1;scalez=1;}
 };
 
+struct point
+{
+	float x;
+	float y;
+};
+
 int theta=0;
 int clockA=0, clockB=0, clockCount=0;
 int count;
 float panx=0, pany=0;
 int zoom = 7;
+enum {A, B, C, D, E, F, G, H};
+point board[8][8];
+
 chessPiece pieces[32];
 
 Point3* ClockMesh()
 {
 	Point3 *ar=new Point3 [19];
+	Point3 temp;
 	for(int i = 0; i < 6; i++)
 	{
 		ar[i].set(.5*cos((i)*3.14/5)+.5, .5*sin((i)*3.14/5)+1, 0);
@@ -73,6 +83,15 @@ Point3* ClockMesh()
 	ar[16].set(1.5, 0, 0);
 	ar[17].set(1.5, 1, 0);
 	ar[18].set(1, 1, 0);
+
+
+	// apparently, my mesh isn't ccw. Reversing the vectors to make ccw.
+	for (int i = 0; i < 9; i++)
+	{
+		temp = ar[i];
+		ar[i] = ar[18-i];
+		ar[18-i] = temp;
+	}
 
 
 	return ar;
@@ -458,14 +477,26 @@ void myKeyboard(unsigned char theKey, int x, int y)
 
 void MyInit()
 {
+
+	for (int i = 0; i < 8; i++)
+	{
+		for (int j = 0; j < 8; j++) // G is the last column of the chessboard
+		{
+			board[i][j].x = .025 - .10*j;
+			board[i][j].y = .035 - .10*i;
+			cout << board[i][j].x << ',' <<board[i][j].y << '\t';
+		}
+		cout << endl;
+	}
+
 	//spawn ALL the pawns
 	for (int i = 0; i < 2; i++)
 	{
 		for (int j = 0; j < 8; j++) //-.09
 		{
-			pieces[(i*8)+j].x = -.575 + 0.5*i;
+			pieces[(i*8)+j].x = board[j][i?1:6].x;
 			pieces[(i*8)+j].y = .4;
-			pieces[(i*8)+j].z = .035 - .10*j;
+			pieces[(i*8)+j].z =  board[j][i?1:6].y;
 			pieces[(i*8)+j].model = &DrawPawn;
 			pieces[(i*8)+j].scalex= .06;
 			pieces[(i*8)+j].scaley= .07;
@@ -477,23 +508,25 @@ void MyInit()
 	{
 		for (int j = 0; j < 2; j++)
 		{
-			pieces[(i*2)+j + 16].x = -.68 + 0.7*i;
+			pieces[(i*2)+j + 16].x = board[7*j][7*i].x;
 			pieces[(i*2)+j + 16].y = .4;
-			pieces[(i*2)+j + 16].z = .03 - 0.695*j;
+			pieces[(i*2)+j + 16].z = board[7*j][7*i].y;
 			pieces[(i*2)+j + 16].model = &DrawRook;
 			pieces[(i*2)+j + 16].scalex= .05;
 			pieces[(i*2)+j + 16].scaley= .05;
 			pieces[(i*2)+j + 16].scalez= .05;
-			pieces[(i*2)+j + 16].isBlack = i;
+			pieces[(i*2)+j + 16].isBlack = !i;
 		}
 	}
+
+	// Draw Bishops
 	for (int i = 0; i < 2; i++)
 	{
 		for (int j = 0; j < 2; j++)
 		{
-			pieces[(i*2)+j + 20].x = -.68 + 0.7*i;
+			pieces[(i*2)+j + 20].x = board[j? C : F][i? 0:7].x;
 			pieces[(i*2)+j + 20].y = .4;
-			pieces[(i*2)+j + 20].z = -.175 - 0.284*j;
+			pieces[(i*2)+j + 20].z = board[j? C : F][i? 0:7].y;
 			pieces[(i*2)+j + 20].model = &DrawBishop;
 			pieces[(i*2)+j + 20].scalex= .05;
 			pieces[(i*2)+j + 20].scaley= .05;
@@ -501,13 +534,15 @@ void MyInit()
 			pieces[(i*2)+j + 20].isBlack = i;
 		}
 	}
+
+	// Draw Knights
 	for (int i = 0; i < 2; i++)
 	{
 		for (int j = 0; j < 2; j++)
 		{
-			pieces[(i*2)+j + 24].x = -.68 + 0.7*i;
+			pieces[(i*2)+j + 24].x = board[j? B : G][i? 0:7].x;
 			pieces[(i*2)+j + 24].y = .4;
-			pieces[(i*2)+j + 24].z = -.07 - 0.495*j;
+			pieces[(i*2)+j + 24].z =board[j? B : G][i? 0:7].y;
 			pieces[(i*2)+j + 24].model = &DrawKnight;
 			pieces[(i*2)+j + 24].scalex= .05;
 			pieces[(i*2)+j + 24].scaley= .05;
@@ -518,15 +553,14 @@ void MyInit()
 				pieces[(i*2)+j + 24].roll = 180;
 			}
 		}
-		//-.68, .4, -.37);(.022, .4, -.37);
 	}
 
 	for (int i = 0; i < 2; i++)
 	{
 
-		pieces[28 + i].x = -.68 + 0.7*i;
+		pieces[28 + i].x = board[E][i? 0:7].x;
 		pieces[28 + i].y = .4;
-		pieces[28 + i].z = -.37;
+		pieces[28 + i].z =board[E][i? 0:7].y;
 		pieces[28 + i].model = &DrawKing;
 		pieces[28 + i].scalex= .05;
 		pieces[28 + i].scaley= .05;
@@ -537,9 +571,9 @@ void MyInit()
 		for (int i = 0; i < 2; i++)
 	{
 
-		pieces[30 + i].x = -.68 + 0.7*i;
+		pieces[30 + i].x = board[D][i? 0:7].x;
 		pieces[30 + i].y = .4;
-		pieces[30 + i].z = -.283;
+		pieces[30 + i].z =  board[D][i? 0:7].y;
 		pieces[30 + i].model = &DrawQueen;
 		pieces[30 + i].scalex= .05;
 		pieces[30 + i].scaley= .05;
