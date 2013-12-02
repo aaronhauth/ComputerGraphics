@@ -59,10 +59,59 @@ int clockA=0, clockB=0, clockCount=0;
 int count;
 float panx=0, pany=0;
 int zoom = 7;
+int moveNum = 0; // Holds the value of the current move.
 enum {A, B, C, D, E, F, G, H};
 point board[8][8];
 
 chessPiece pieces[32];
+
+
+void script()
+{
+	switch(moveNum)
+	{
+	case 0: 
+		pieces[4].isMoving = true;
+		pieces[4].dx = (board[E][3].x - pieces[4].x)/100;
+		pieces[4].dz = (board[E][3].y - pieces[4].z)/100;
+		break;
+	case 1:
+		pieces[10].isMoving = true;
+		pieces[10].dx = (board[C][4].x - pieces[10].x)/100;
+		pieces[10].dz = (board[C][4].y - pieces[10].z)/100;
+		break;
+	case 2:
+		pieces[30].isMoving = true;
+		pieces[30].dx = (board[H][4].x - pieces[30].x)/100;
+		pieces[30].dz = (board[H][4].y - pieces[30].z)/100;
+		break;
+	case 3:
+		pieces[31].isMoving = true;
+		pieces[31].dx = (board[A][4].x - pieces[31].x)/100;
+		pieces[31].dz = (board[A][4].y - pieces[31].z)/100;
+		break;
+	case 4:
+		
+		pieces[30].isMoving = true;
+		pieces[30].dx = (board[C][4].x - pieces[30].x)/100;
+		pieces[30].dz = (board[C][4].y - pieces[30].z)/100;
+		break;
+	case 5:
+		pieces[10].model = NULL;
+		pieces[31].isMoving = true;
+		pieces[31].dx = (board[A][3].x - pieces[31].x)/100;
+		pieces[31].dz = (board[A][3].y - pieces[31].z)/100;
+		break;
+	case 6:
+		pieces[30].isMoving = true;
+		pieces[30].dx = (board[C][7].x - pieces[30].x)/100;
+		pieces[30].dz = (board[C][7].y - pieces[30].z)/100;
+		break;
+	case 7:
+		pieces[22].model = NULL;
+	}
+	moveNum++;
+}
 
 Point3* ClockMesh()
 {
@@ -97,6 +146,7 @@ Point3* ClockMesh()
 	return ar;
 
 }
+
 void DrawClockFace()
 {
 	GLUquadric *solid = gluNewQuadric();
@@ -374,7 +424,6 @@ void DisplaySolid()
 
 	glPushMatrix();
 		glTranslated(-.02, -.049, -0.035);
-		//DrawPiecesOnBoard();
 		for(int i = 0; i < 32; i++)
 		{
 			if (pieces[i].model == NULL)
@@ -404,8 +453,9 @@ void DisplaySolid()
 	glPopMatrix();
 
 	glPushMatrix();
-	glTranslatef(-.7, .3, 0);
+	glTranslatef(0, .3, 0);
 	glRotatef(-90, 1, 0, 0);
+	glRotatef(90, 0, 0, 1);
 	glScaled(.1,.1,.1);
 	DrawBoard();
 	glPopMatrix();
@@ -424,10 +474,11 @@ void animateFunc(int value)
 			pieces[i].x += pieces[i].dx;
 			pieces[i].y += pieces[i].dy;
 			pieces[i].z += pieces[i].dz;
-			if (pieces[i].i == 180)
+			if (pieces[i].i++ == 100)
 			{
 				pieces[i].isMoving = false;
 				pieces[i].i = 0;
+				script();
 			}
 		}
 	}
@@ -441,6 +492,7 @@ void animateFunc(int value)
 	glutPostRedisplay();
 	glutTimerFunc(30, animateFunc, value);
 }
+
 //keyboard func for 1-5 and a
 void myKeyboard(unsigned char theKey, int x, int y)
 {
@@ -494,9 +546,9 @@ void MyInit()
 	{
 		for (int j = 0; j < 8; j++) //-.09
 		{
-			pieces[(i*8)+j].x = board[j][i?1:6].x;
+			pieces[(i*8)+j].x = board[j][i?6:1].x;
 			pieces[(i*8)+j].y = .4;
-			pieces[(i*8)+j].z =  board[j][i?1:6].y;
+			pieces[(i*8)+j].z =  board[j][i?6:1].y;
 			pieces[(i*8)+j].model = &DrawPawn;
 			pieces[(i*8)+j].scalex= .06;
 			pieces[(i*8)+j].scaley= .07;
@@ -508,9 +560,9 @@ void MyInit()
 	{
 		for (int j = 0; j < 2; j++)
 		{
-			pieces[(i*2)+j + 16].x = board[7*j][7*i].x;
+			pieces[(i*2)+j + 16].x = board[7*!j][7*!i].x;
 			pieces[(i*2)+j + 16].y = .4;
-			pieces[(i*2)+j + 16].z = board[7*j][7*i].y;
+			pieces[(i*2)+j + 16].z = board[7*!j][7*!i].y;
 			pieces[(i*2)+j + 16].model = &DrawRook;
 			pieces[(i*2)+j + 16].scalex= .05;
 			pieces[(i*2)+j + 16].scaley= .05;
@@ -524,9 +576,9 @@ void MyInit()
 	{
 		for (int j = 0; j < 2; j++)
 		{
-			pieces[(i*2)+j + 20].x = board[j? C : F][i? 0:7].x;
+			pieces[(i*2)+j + 20].x = board[j? F : C][i? 7:0].x;
 			pieces[(i*2)+j + 20].y = .4;
-			pieces[(i*2)+j + 20].z = board[j? C : F][i? 0:7].y;
+			pieces[(i*2)+j + 20].z = board[j? F : C][i? 7:0].y;
 			pieces[(i*2)+j + 20].model = &DrawBishop;
 			pieces[(i*2)+j + 20].scalex= .05;
 			pieces[(i*2)+j + 20].scaley= .05;
@@ -540,15 +592,15 @@ void MyInit()
 	{
 		for (int j = 0; j < 2; j++)
 		{
-			pieces[(i*2)+j + 24].x = board[j? B : G][i? 0:7].x;
+			pieces[(i*2)+j + 24].x = board[j? G : B][i? 7:0].x;
 			pieces[(i*2)+j + 24].y = .4;
-			pieces[(i*2)+j + 24].z =board[j? B : G][i? 0:7].y;
+			pieces[(i*2)+j + 24].z = board[j? G : B][i? 7:0].y;
 			pieces[(i*2)+j + 24].model = &DrawKnight;
 			pieces[(i*2)+j + 24].scalex= .05;
 			pieces[(i*2)+j + 24].scaley= .05;
 			pieces[(i*2)+j + 24].scalez= .05;
 			pieces[(i*2)+j + 24].isBlack = i;
-			if (!pieces[(i*2)+j + 24].isBlack)
+			if (pieces[(i*2)+j + 24].isBlack)
 			{
 				pieces[(i*2)+j + 24].roll = 180;
 			}
@@ -558,30 +610,28 @@ void MyInit()
 	for (int i = 0; i < 2; i++)
 	{
 
-		pieces[28 + i].x = board[E][i? 0:7].x;
+		pieces[28 + i].x = board[E][i? 7:0].x;
 		pieces[28 + i].y = .4;
-		pieces[28 + i].z =board[E][i? 0:7].y;
+		pieces[28 + i].z =board[E][i? 7:0].y;
 		pieces[28 + i].model = &DrawKing;
 		pieces[28 + i].scalex= .05;
 		pieces[28 + i].scaley= .05;
 		pieces[28 + i].scalez= .05;
 		pieces[28 + i].isBlack = i;
-		//-.68, .4, -.37);(.022, .4, -.37);
 	}
 		for (int i = 0; i < 2; i++)
 	{
 
-		pieces[30 + i].x = board[D][i? 0:7].x;
+		pieces[30 + i].x = board[D][i? 7:0].x;
 		pieces[30 + i].y = .4;
-		pieces[30 + i].z =  board[D][i? 0:7].y;
+		pieces[30 + i].z =  board[D][i? 7:0].y;
 		pieces[30 + i].model = &DrawQueen;
 		pieces[30 + i].scalex= .05;
 		pieces[30 + i].scaley= .05;
 		pieces[30 + i].scalez= .05;
 		pieces[30 + i].isBlack = i;
-		//-.68, .4, -.37);(.022, .4, -.37);
 	}
-
+	script();
 }
 
 
@@ -602,7 +652,7 @@ int main(int argc, char **argv)
 	glShadeModel(GL_SMOOTH);
 	glEnable(GL_DEPTH_TEST); // for hidden surface removal
 	glEnable(GL_NORMALIZE);  // normalize vectors for proper shading
-	glClearColor(0.1f, 0.1f, 0.1f, 0.0f); //background is light gray
+	glClearColor(0.5f, 0.5f, 0.5f, 1.0f); //background is light gray
 	glViewport(0, 0, 640, 480);
 	MyInit();
 	glutMainLoop();
