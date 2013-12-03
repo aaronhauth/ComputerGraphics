@@ -58,7 +58,7 @@ struct point
 bool sound = false;
 int theta=0;
 int clockA=0, clockB=0, clockCount=0;
-int count;
+int countNum;
 float panx=0, pany=0;
 int zoom = 7;
 int moveNum = 0; // Holds the value of the current move.
@@ -77,38 +77,45 @@ void script()
 		pieces[4].isMoving = true;
 		pieces[4].dx = (board[E][3].x - pieces[4].x)/100;
 		pieces[4].dz = (board[E][3].y - pieces[4].z)/100;
+		pieces[4].roll = atan(pieces[4].dx/pieces[4].dz)* (180/3.14);
 		break;
 	case 1:
 		pieces[10].isMoving = true;
 		pieces[10].dx = (board[C][4].x - pieces[10].x)/100;
 		pieces[10].dz = (board[C][4].y - pieces[10].z)/100;
+		pieces[10].roll = atan(pieces[10].dx/pieces[10].dz)* (180/3.14);
 		break;
 	case 2:
 		pieces[30].isMoving = true;
 		pieces[30].dx = (board[H][4].x - pieces[30].x)/100;
 		pieces[30].dz = (board[H][4].y - pieces[30].z)/100;
+		pieces[30].roll = atan(pieces[30].dx/pieces[30].dz)* (180/3.14) + 180;
 		break;
 	case 3:
 		pieces[31].isMoving = true;
 		pieces[31].dx = (board[A][4].x - pieces[31].x)/100;
 		pieces[31].dz = (board[A][4].y - pieces[31].z)/100;
+		pieces[31].roll = atan(pieces[31].dx/pieces[31].dz)* (180/3.14);
 		break;
 	case 4:
 		
 		pieces[30].isMoving = true;
 		pieces[30].dx = (board[C][4].x - pieces[30].x)/100;
 		pieces[30].dz = (board[C][4].y - pieces[30].z)/100;
+		pieces[30].roll = atan(pieces[4].dx/pieces[4].dz)* (180/3.14)+90;
 		break;
 	case 5:
 		pieces[10].model = NULL;
 		pieces[31].isMoving = true;
 		pieces[31].dx = (board[A][3].x - pieces[31].x)/100;
 		pieces[31].dz = (board[A][3].y - pieces[31].z)/100;
+		pieces[31].roll = -atan(pieces[31].dx/pieces[31].dz)* (180/3.14);
 		break;
 	case 6:
 		pieces[30].isMoving = true;
 		pieces[30].dx = (board[C][7].x - pieces[30].x)/100;
 		pieces[30].dz = (board[C][7].y - pieces[30].z)/100;
+		pieces[30].roll = -atan(pieces[30].dx/pieces[30].dz)* (180/3.14);
 		break;
 	case 7:
 		pieces[22].model = NULL;
@@ -478,14 +485,6 @@ GLuint raw_texture_load(const char *filename, int width, int height) {
 //the draw function+
 void DisplaySolid()
 {
-
-	if (sound) {
-		PlaySound((LPCWSTR)"ONight.mp3", NULL, SND_LOOP | SND_ASYNC);
-	}
-	else {
-		PlaySound(NULL, NULL, SND_LOOP | SND_ASYNC);
-	}
-
 	// set properties of the surface material
 	GLfloat mat_ambient[]={0.7f, 0.7f, 0.7f, 1.0f}; // gray
 	GLfloat mat_diffuse[]={0.6f, 0.6f, 0.6f, 1.0f};
@@ -527,8 +526,8 @@ void DisplaySolid()
 			glPushMatrix();
 				glTranslated(pieces[i].x, pieces[i].y, pieces[i].z);
 				glRotated(pieces[i].yaw, 0, 0, 1);
-				glRotated(pieces[i].pitch, 1, 0, 0);
 				glRotated(pieces[i].roll, 0, 1, 0);
+				glRotated(pieces[i].pitch, 1, 0, 0);
 				glScaled(pieces[i].scalex,pieces[i].scaley, pieces[i].scalez);
 				if(pieces[i].isBlack)
 					glColor3f(.1,.1,.1);
@@ -584,6 +583,7 @@ void animateFunc(int value)
 			pieces[i].x += pieces[i].dx;
 			pieces[i].y += pieces[i].dy;
 			pieces[i].z += pieces[i].dz;
+			pieces[i].pitch = 20*sin((pieces[i].i*3.14)/100);
 			if (pieces[i].i++ == 100)
 			{
 				pieces[i].isMoving = false;
@@ -752,8 +752,13 @@ void myKeyboard(unsigned char theKey, int x, int y)
 					theta=0;
 					clockA=0; 
 					clockB=0;
+					for (int i = 0; i < 32; i++)
+					{
+						pieces[i].i = 0;
+						pieces[i].isMoving=false;
+					}
 					clockCount=0;
-					count = 0;
+					moveNum = 0;
 					panx=0;
 					pany=0; 
 					zoom = 7;
@@ -767,6 +772,12 @@ void myKeyboard(unsigned char theKey, int x, int y)
 					}
 					else if (theKey == 'o') {
 						sound = false;
+					}
+					if (sound) {
+						PlaySound(/*(LPCSTR)*/"ONight.wav", NULL, SND_LOOP | SND_ASYNC);
+					}
+					else {
+						PlaySound(NULL, NULL, SND_LOOP | SND_ASYNC);
 					}
 					break;
                 default:
