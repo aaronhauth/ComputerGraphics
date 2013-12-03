@@ -794,7 +794,7 @@ int main(int argc, char **argv)
 	glutInitDisplayMode(GLUT_DOUBLE| GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(640, 480);
 	glutInitWindowPosition(100, 100);
-	glutCreateWindow("Shaded example - 3D scene");
+	glutCreateWindow("CHESS");
 	glutDisplayFunc(DisplaySolid);
     glutKeyboardFunc(myKeyboard);
 	glutTimerFunc(30, animateFunc, 100);
