@@ -13,6 +13,7 @@
 #include <gl/GL.h>
 #include <gl/GLU.h>
 #include <gl/glut.h>
+#include <stdio.h>
 #endif
 
 #ifdef LINUX
@@ -54,6 +55,7 @@ struct point
 	float y;
 };
 
+bool sound = false;
 int theta=0;
 int clockA=0, clockB=0, clockCount=0;
 int count;
@@ -64,6 +66,7 @@ enum {A, B, C, D, E, F, G, H};
 point board[8][8];
 
 chessPiece pieces[32];
+static GLuint texture;
 
 
 void script()
@@ -386,10 +389,103 @@ void DrawBoard()
 	glPopMatrix();
 }
 
+//draws the table
+void DrawTable() {
+	GLUquadric *solid = gluNewQuadric();
+	solid = gluNewQuadric();
+	gluQuadricDrawStyle(solid, GLU_FILL);
+	glPushMatrix();
+	for(int i = 0; i < 10; i++)
+	{
+		glPushMatrix();
+		glTranslated(i, 0, 0);
+		for (int j = 0; j < 10; j++)
+		{
+			glPushMatrix();
+			glTranslated(0, j, 0);
+			glutSolidCube(1);
+			glPopMatrix();
+		}
+		glPopMatrix();
+	}
+	glPopMatrix();
+	glPushMatrix();
+	glTranslatef(1, 9, -15);
+	gluCylinder(solid, .5, .5, 15, 20, 1);
+	glPopMatrix();
+	glPushMatrix();
+	glTranslatef(1, 1, -15);
+	gluCylinder(solid, .5, .5, 15, 20, 1);
+	glPopMatrix();
+	glPushMatrix();
+	glTranslatef(7, 9, -15);
+	gluCylinder(solid, .5, .5, 15, 20, 1);
+	glPopMatrix();
+	glPushMatrix();
+	glTranslatef(7, 1, -15);
+	gluCylinder(solid, .5, .5, 15, 20, 1);
+	glPopMatrix();
+
+}
+
+GLuint raw_texture_load(const char *filename, int width, int height) {
+	GLuint texture;
+     unsigned char *data;
+     FILE *file;
+ 
+     // open texture data
+     file = fopen(filename, "rb");
+     if (file == NULL) return 0;
+ 
+     // allocate buffer
+     data = (unsigned char*) malloc(width * height * 4);
+ 
+     // read texture data
+     fread(data, width * height * 4, 1, file);
+     fclose(file);
+ 
+     // allocate a texture name
+     glGenTextures(1, &texture);
+ 
+     // select our current texture
+     glBindTexture(GL_TEXTURE_2D, texture);
+ 
+     // select modulate to mix texture with color for shading
+     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+ 
+     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_DECAL);
+     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_DECAL);
+ 
+     // when texture area is small, bilinear filter the closest mipmap
+     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+     // when texture area is large, bilinear filter the first mipmap
+     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+ 
+     // texture should tile
+     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+ 
+     // build our texture mipmaps
+     gluBuild2DMipmaps(GL_TEXTURE_2D, 4, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+ 
+     // free buffer
+     free(data);
+ 
+     return texture;
+}
+
 
 //the draw function+
 void DisplaySolid()
 {
+
+	if (sound) {
+		PlaySound((LPCWSTR)"ONight.mp3", NULL, SND_LOOP | SND_ASYNC);
+	}
+	else {
+		PlaySound(NULL, NULL, SND_LOOP | SND_ASYNC);
+	}
+
 	// set properties of the surface material
 	GLfloat mat_ambient[]={0.7f, 0.7f, 0.7f, 1.0f}; // gray
 	GLfloat mat_diffuse[]={0.6f, 0.6f, 0.6f, 1.0f};
@@ -452,6 +548,18 @@ void DisplaySolid()
 		DrawClock();
 	glPopMatrix();
 
+
+	
+	glPushMatrix();
+	glColor3f(.6,.4,.2);
+	glTranslatef(0, .2, 0);
+	glRotatef(-90, 1, 0, 0);
+	glRotatef(90, 0, 0, 1);
+	glScaled(.1,.1,.1);
+	DrawTable();
+	glPopMatrix();
+
+	
 	glPushMatrix();
 	glTranslatef(0, .3, 0);
 	glRotatef(-90, 1, 0, 0);
@@ -459,8 +567,10 @@ void DisplaySolid()
 	glScaled(.1,.1,.1);
 	DrawBoard();
 	glPopMatrix();
+
 	glPopMatrix();
 	glutSwapBuffers();
+
 }
 
 
@@ -493,42 +603,20 @@ void animateFunc(int value)
 	glutTimerFunc(30, animateFunc, value);
 }
 
-//keyboard func for 1-5 and a
-void myKeyboard(unsigned char theKey, int x, int y)
-{
-        switch(theKey)
-        {
-                case 'q':   // end display
-                        exit (0);
-				case'm':
-					theta+=5;
-					break;
-				case'n':
-					theta-=5;
-					break;
-				case 'a':
-					if (pieces[0].isMoving)
-					{
-						pieces[0].isMoving = false;
-						pieces[0].i = 0;
-						pieces[0].pitch=0;
-						pieces[0].yaw=0;
-						pieces[0].roll=0;
 
-					}
-					else
-						pieces[0].isMoving = true;
-                default:
-                        if (theKey == 27)   // ASCII for escape character
-                                exit(0);
-        }
-
-        glutPostRedisplay();     // invoke the "Draw" function to actually display the new image
+void SpecialKeys(int key, int x, int y) { 
+	if (key == GLUT_KEY_RIGHT) {
+		theta += 1;
+	}
+	else if (key == GLUT_KEY_LEFT) {
+		theta -= 1;
+	}
 }
 
 
 void MyInit()
 {
+	texture = raw_texture_load("Wood.jpg", 256, 256);
 
 	for (int i = 0; i < 8; i++)
 	{
@@ -635,6 +723,60 @@ void MyInit()
 }
 
 
+//keyboard func for 1-5 and a
+void myKeyboard(unsigned char theKey, int x, int y)
+{
+        switch(theKey)
+        {
+                case 'q':   // end display
+                        exit (0);
+				case'm':
+					theta+=5;
+					break;
+				case'n':
+					theta-=5;
+					break;
+				case 'a':
+					if (pieces[0].isMoving)
+					{
+						pieces[0].isMoving = false;
+						pieces[0].i = 0;
+						pieces[0].pitch=0;
+						pieces[0].yaw=0;
+						pieces[0].roll=0;
+
+					}
+					else
+						pieces[0].isMoving = true;
+				case 'b':
+					theta=0;
+					clockA=0; 
+					clockB=0;
+					clockCount=0;
+					count = 0;
+					panx=0;
+					pany=0; 
+					zoom = 7;
+					moveNum = 0; 
+					MyInit();
+					glutPostRedisplay();
+					break;
+				case 's':
+					if (theKey == 's') {
+						sound = true;
+					}
+					else if (theKey == 'o') {
+						sound = false;
+					}
+					break;
+                default:
+                        if (theKey == 27)   // ASCII for escape character
+                                exit(0);
+        }
+
+        glutPostRedisplay();     // invoke the "Draw" function to actually display the new image
+}
+
 int main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
@@ -645,6 +787,7 @@ int main(int argc, char **argv)
 	glutDisplayFunc(DisplaySolid);
     glutKeyboardFunc(myKeyboard);
 	glutTimerFunc(30, animateFunc, 100);
+	glutSpecialFunc(SpecialKeys);
 	
 	glEnable(GL_LIGHTING);  //	enable the light source
 	glEnable(GL_LIGHT0);
