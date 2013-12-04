@@ -66,55 +66,47 @@ enum {A, B, C, D, E, F, G, H};
 point board[8][8];
 
 chessPiece pieces[32];
-static GLuint texture;
+static GLuint *texture;
 
+
+void movePiece(int piece, int col, int row)
+{
+	pieces[piece].isMoving = true;
+	pieces[piece].dx = (board[col][row].x - pieces[piece].x)/100;
+	pieces[piece].dz = (board[col][row].y - pieces[piece].z)/100;
+}
 
 void script()
 {
 	switch(moveNum)
 	{
 	case 0: 
-		pieces[4].isMoving = true;
-		pieces[4].dx = (board[E][3].x - pieces[4].x)/100;
-		pieces[4].dz = (board[E][3].y - pieces[4].z)/100;
+		movePiece(4, E, 3);
 		pieces[4].roll = atan(pieces[4].dx/pieces[4].dz)* (180/3.14);
 		break;
 	case 1:
-		pieces[10].isMoving = true;
-		pieces[10].dx = (board[C][4].x - pieces[10].x)/100;
-		pieces[10].dz = (board[C][4].y - pieces[10].z)/100;
+		movePiece(10, C, 4);
 		pieces[10].roll = atan(pieces[10].dx/pieces[10].dz)* (180/3.14);
 		break;
 	case 2:
-		pieces[30].isMoving = true;
-		pieces[30].dx = (board[H][4].x - pieces[30].x)/100;
-		pieces[30].dz = (board[H][4].y - pieces[30].z)/100;
+		movePiece(30, H, 4);
 		pieces[30].roll = atan(pieces[30].dx/pieces[30].dz)* (180/3.14) + 180;
 		break;
 	case 3:
-		pieces[31].isMoving = true;
-		pieces[31].dx = (board[A][4].x - pieces[31].x)/100;
-		pieces[31].dz = (board[A][4].y - pieces[31].z)/100;
+		movePiece(31, A, 4);
 		pieces[31].roll = atan(pieces[31].dx/pieces[31].dz)* (180/3.14);
 		break;
 	case 4:
-		
-		pieces[30].isMoving = true;
-		pieces[30].dx = (board[C][4].x - pieces[30].x)/100;
-		pieces[30].dz = (board[C][4].y - pieces[30].z)/100;
+		movePiece(30, C, 4);
 		pieces[30].roll = atan(pieces[4].dx/pieces[4].dz)* (180/3.14)+90;
 		break;
 	case 5:
 		pieces[10].model = NULL;
-		pieces[31].isMoving = true;
-		pieces[31].dx = (board[A][3].x - pieces[31].x)/100;
-		pieces[31].dz = (board[A][3].y - pieces[31].z)/100;
+		movePiece(31, A, 3);
 		pieces[31].roll = -atan(pieces[31].dx/pieces[31].dz)* (180/3.14);
 		break;
 	case 6:
-		pieces[30].isMoving = true;
-		pieces[30].dx = (board[C][7].x - pieces[30].x)/100;
-		pieces[30].dz = (board[C][7].y - pieces[30].z)/100;
+		movePiece(30, C, 7);
 		pieces[30].roll = -atan(pieces[30].dx/pieces[30].dz)* (180/3.14);
 		break;
 	case 7:
@@ -157,18 +149,34 @@ Point3* ClockMesh()
 
 }
 
+void DrawDisk()
+{
+	glEnable(GL_TEXTURE_2D);
+	glBegin(GL_POLYGON);
+	glNormal3i(0, 0, 1);
+		for(int i = 0; i < 20; i++)
+		{
+			glTexCoord2d(0.0,0.0);(.5*sin(i*2*3.14/20)+.5, .5*cos(i*2*3.14/20)+.5);
+			glVertex3f(0.4*sin(i*2*3.14/20), 0.4*cos(i*2*3.14/20), 0);
+		}
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
+}
+
 void DrawClockFace()
 {
 	GLUquadric *solid = gluNewQuadric();
 	glPushMatrix();
 		glColor3f(1,1,1);
 		glTranslated(0, 0, -.01);
-		gluDisk(solid, 0, 0.4, 20, 1);
+		//gluDisk(solid, 0, 0.4, 20, 1);
+		DrawDisk();
 		glTranslated(0,0,-.1);
 		glColor3f(0,0,0);
 		glRotated(-90,1,0,0);
 		glScaled(.1, .05, .4);
 		gluCylinder(solid, 1, 0, 1, 3, 1);
+		DrawDisk();
 
 	glPopMatrix();
 }
@@ -362,6 +370,74 @@ void DrawQueen()
 	glPopMatrix();
 }
 
+void DrawCube()
+{
+	glEnable(GL_TEXTURE_2D);
+	glBegin(GL_POLYGON);
+		glNormal3i(0,0,1);
+		glTexCoord2d(0.0,0.0);	glVertex3f(  0.5, -0.5, 0.5 );
+		glTexCoord2d(1.0,0.0);	glVertex3f(  0.5,  0.5, 0.5 );
+		glTexCoord2d(0.0,1.0);	glVertex3f( -0.5,  0.5, 0.5 );
+		glTexCoord2d(1.0,1.0);	glVertex3f( -0.5, -0.5, 0.5 );
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
+
+	glEnable(GL_TEXTURE_2D);
+	glBegin(GL_POLYGON);
+		glNormal3i(0,0,-1);
+		glTexCoord2d(0.0, 0.0); glVertex3f(  0.5, -0.5, -0.5 );  
+		glTexCoord2d(1.0, 0.0); glVertex3f(  0.5,  0.5, -0.5 );   
+		glTexCoord2d(0.0, 1.0); glVertex3f( -0.5,  0.5, -0.5 );  
+		glTexCoord2d(1.0, 1.0); glVertex3f( -0.5, -0.5, -0.5 );  
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
+
+ 
+	// Purple side - RIGHT
+	glEnable(GL_TEXTURE_2D);
+	glBegin(GL_POLYGON);
+		glNormal3i(1,0,0);
+		glTexCoord2d(0.0, 0.0); glVertex3f( 0.5, -0.5, -0.5 );
+		glTexCoord2d(1.0, 0.0); glVertex3f( 0.5,  0.5, -0.5 );
+		glTexCoord2d(0.0, 1.0); glVertex3f( 0.5,  0.5,  0.5 );
+		glTexCoord2d(1.0, 1.0); glVertex3f( 0.5, -0.5,  0.5 );
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
+ 
+	// Green side - LEFT
+	glEnable(GL_TEXTURE_2D);
+	glBegin(GL_POLYGON);
+		glNormal3i(-1,0,0);
+		glTexCoord2d(0.0, 0.0); glVertex3f( -0.5, -0.5,  0.5 );
+		glTexCoord2d(1.0, 0.0); glVertex3f( -0.5,  0.5,  0.5 );
+		glTexCoord2d(0.0, 1.0); glVertex3f( -0.5,  0.5, -0.5 );
+		glTexCoord2d(1.0, 1.0); glVertex3f( -0.5, -0.5, -0.5 );
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
+ 
+	// Blue side - TOP
+	glEnable(GL_TEXTURE_2D);
+	glBegin(GL_POLYGON);
+		glNormal3i(0,1,0);
+		glTexCoord2d(0.0, 0.0); glVertex3f(  0.5,  0.5,  0.5 );
+		glTexCoord2d(0.0, 1.0); glVertex3f(  0.5,  0.5, -0.5 );
+		glTexCoord2d(1.0, 0.0); glVertex3f( -0.5,  0.5, -0.5 );
+		glTexCoord2d(1.0, 1.0); glVertex3f( -0.5,  0.5,  0.5 );
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
+ 
+	// Red side - BOTTOM
+	glEnable(GL_TEXTURE_2D);
+	glBegin(GL_POLYGON);
+		glNormal3i(0,-1,0);
+		glTexCoord2d(0.0, 0.0); glVertex3f(  0.5, -0.5, -0.5 );
+		glTexCoord2d(0.0, 1.0); glVertex3f(  0.5, -0.5,  0.5 );
+		glTexCoord2d(1.0, 0.0); glVertex3f( -0.5, -0.5,  0.5 );
+		glTexCoord2d(1.0, 1.0); glVertex3f( -0.5, -0.5, -0.5 );
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
+}
+
 //draws the board
 void DrawBoard()
 {
@@ -388,7 +464,8 @@ void DrawBoard()
 				else
 					glColor4f(0.4, 0.0, 0.0,1);
 			}
-			glutSolidCube(1);
+			//glutSolidCube(1);
+			DrawCube();
 			glPopMatrix();
 		}
 		glPopMatrix();
@@ -410,7 +487,7 @@ void DrawTable() {
 		{
 			glPushMatrix();
 			glTranslated(0, j, 0);
-			glutSolidCube(1);
+			DrawCube();
 			glPopMatrix();
 		}
 		glPopMatrix();
@@ -435,7 +512,10 @@ void DrawTable() {
 
 }
 
-GLuint raw_texture_load(const char *filename, int width, int height) {
+
+
+GLuint raw_texture_load(GLuint texture, const char *filename, int width, int height) {
+	/*
 	GLuint texture;
      unsigned char *data;
      FILE *file;
@@ -478,7 +558,48 @@ GLuint raw_texture_load(const char *filename, int width, int height) {
      // free buffer
      free(data);
  
-     return texture;
+     return texture;*/
+
+	unsigned char * data;
+
+	FILE * file;
+
+	file = fopen( filename, "rb" );
+
+	if ( file == NULL ) return 0;
+	width = 1024;
+	height = 512;
+	data = (unsigned char *)malloc( width * height * 3 );
+	//int size = fseek(file,);
+	fread( data, width * height * 3, 1, file );
+	fclose( file );
+
+	for(int i = 0; i < width * height ; ++i)
+	{
+		int index = i*3;
+		unsigned char B,R;
+		B = data[index];
+		R = data[index+2];
+
+		data[index] = R;
+		data[index+2] = B;
+
+	}
+
+
+//	glGenTextures( 1, &texture );
+	glBindTexture( GL_TEXTURE_2D, texture );
+	glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE,GL_MODULATE );
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST );
+
+
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR );
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,GL_REPEAT );
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,GL_REPEAT );
+	gluBuild2DMipmaps( GL_TEXTURE_2D, 3, width, height,GL_RGB, GL_UNSIGNED_BYTE, data );
+	free( data );
+
+	return texture;
 }
 
 
@@ -514,8 +635,9 @@ void DisplaySolid()
 	// start drawing
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 	glPushMatrix();
-	glRotated(theta, 0, 1, 0);
 	glTranslated(panx, 0, pany);
+	glRotated(theta, 0, 1, 0);
+	
 
 	glPushMatrix();
 		glTranslated(-.02, -.049, -0.035);
@@ -539,6 +661,7 @@ void DisplaySolid()
 		}
 	glPopMatrix();
 
+	glBindTexture(GL_TEXTURE_2D, texture[1]);
 	glPushMatrix();
 		glColor3f(0.6, 0.4, 0.2);
 		glTranslated(-.3, .25, -1);
@@ -548,7 +671,7 @@ void DisplaySolid()
 	glPopMatrix();
 
 
-	
+	glBindTexture(GL_TEXTURE_2D, texture[0]);
 	glPushMatrix();
 	glColor3f(.6,.4,.2);
 	glTranslatef(0, .2, 0);
@@ -616,7 +739,10 @@ void SpecialKeys(int key, int x, int y) {
 
 void MyInit()
 {
-	texture = raw_texture_load("Wood.jpg", 256, 256);
+	texture = new GLuint[2];
+	glGenTextures(2, texture);
+	raw_texture_load(texture[0], "Wood.jpg", 256, 256);
+	raw_texture_load(texture[1], "ClockFace.jpg", 256, 256);
 
 	for (int i = 0; i < 8; i++)
 	{
@@ -624,7 +750,7 @@ void MyInit()
 		{
 			board[i][j].x = .025 - .10*j;
 			board[i][j].y = .035 - .10*i;
-			cout << board[i][j].x << ',' <<board[i][j].y << '\t';
+			//cout << board[i][j].x << ',' <<board[i][j].y << '\t';
 		}
 		cout << endl;
 	}
